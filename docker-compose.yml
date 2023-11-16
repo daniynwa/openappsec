@@ -1,0 +1,28 @@
+version: '3'
+services:
+  open-appsec-agent:
+    container_name: advanced-appsec-agent
+    image: ghcr.io/openappsec/agent:latest
+    hostname: open-appsec-agent
+    restart: unless-stopped
+    ipc: host
+    privileged: true
+    command: "/cp-nano-agent --token cp-3d689afa-7c17-47e3-8cff-98309407429e54ccb2e6-9382-4488-9d04-55605672f00c"
+    volumes:
+      - /root/openappsec/agent/config:/etc/cp/conf
+      - /root/openappsec/agent/data:/etc/cp/data
+      - /root/openappsec/agent/debugs:/var/log/nano_agent
+      - /root/openappsec/advanced-model/open-appsec-advanced-model.tgz:/advanced-model/open-appsec-advanced-model.tgz
+  open-appsec-nginx:
+    container_name: advanced-appsec-nginx
+    image: ghcr.io/openappsec/nginx-attachment:latest
+    hostname: open-appsec-nginx
+    restart: unless-stopped
+    ipc: host
+    privileged: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /root/openappsec/nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+      - /root/openappsec/nginx/config/nginx.conf:/etc/nginx/nginx.conf
